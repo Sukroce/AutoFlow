@@ -16,3 +16,6 @@
 ### Flutter Application: The mobile application that serves as the user interface for AutoFlow and allows applying the rerouting algorithm.
 - Application Code: [here](./Flutter%20Application)
 - Application Apk: [here](App_Apk.md)
+
+### Arduino code: Controls the IR sensors that detects cars on road and the HC05 Bluetooth module that connects to the app.
+- Arduino code: [here](Arduino_code.ino)
