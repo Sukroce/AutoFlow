@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "862604032533",
+    "project_id": "roads-3moods",
+    "storage_bucket": "roads-3moods.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:862604032533:android:85caa4bb464293aee96c1c",
+        "android_client_info": {
+          "package_name": "com.example.three_roads_three_moods"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCD5H5eNKOGg-qov85FFTEbEfiQ--nzeFo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
