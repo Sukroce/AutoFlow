@@ -9,7 +9,7 @@
 - Code for generating datasets: [here](dataset_generator_from_baseline_data.ipynb)
 - Datasets: [here](./Datasets)
 
-### Machine Learning models: Linear Regression and Random Forest Regressor models for each road of the three system roads trained on the generated dataset.
+### Machine Learning Models: Linear Regression and Random Forest Regressor models for each road of the three system roads trained on the generated dataset.
 - Models code and pkl files: [here](./Machine%20Learning%20Models)
 - Jupyter code that runs predictions continously every 5 minutes: [here](predictions.ipynb)
 
