@@ -1,6 +1,7 @@
 # AutoFlow
 
-## This repoistory contains the components of a system that uses IoT and AI to distribute vehicles volumes across all the available routes aiming to reduce total travel time:
+## AutoFlow is an IoT + AI system designed to intelligently distribute vehicle volumes across available routes to minimize total travel time and avoid congestion.
+## This repository contains all the main components of the AutoFlow system:
 
-### Dataset: a Synthetic dataset generated with accurate steps to ensure it's realistic:
-pre dataset-generation process: [here](/Baseline Data for Generating Datasets)
+### Dataset: A synthetic dataset carefully generated using a structured workflow to ensure realistic road behavior, time-of-day variations, and seasonal effects.
+pre dataset-generation process: [here](./Baseline%20Data%20for%20Generating%20Datasets)
