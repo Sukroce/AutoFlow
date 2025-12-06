@@ -1,0 +1,58 @@
+Final Capacity:
+https://www.uomustansiriyah.edu.iq/media/lectures/5/5_2024_02_18!10_30_14_PM.pdf
+Capacity = max flow (vehicle/5 min) = ((Jam density (vehicle/km) * Max speed (km/h)) / 12)/ 4 * number of lanes * LOS
+
+Jam density = 200 vehicles/km (assuming each vehicle takes 5 meters including the spacing)
+
+Max speed:
+26 July corridor: 90 km/h
+ring road: 120 km/h
+rod El Farag: 100 km/h
+
+Number of lanes:
+26 July corridor: 3
+ring road: 7
+rod El Farag: 4
+
+Max flow: 
+26 July corridor: 1125 vehicle/5 min
+ring road: 3500 vehicle/5 min
+rod El Farag: 1666 vehicle/5 min
+
+After LOS A factor for free flow (* 0.34):
+26 July corridor: 383 vehicle/5 min
+ring road: 1190 vehicle/5 min
+rod El Farag: 567 vehicle/5 min
+
+This will change a lot with a different jam density, for example:
+https://en.wikipedia.org/wiki/Traffic_flow#:~:text=%22Jam%20density%22%20refers%20to%20extreme,extrapolations%20from%20actual%20road%20counts.
+says that jam density happens at approximately 185 to 250 vehicles per miles, which is 115 to 155 vehicles per km averaging to 135 vehicles per km:
+
+at jam density = 115
+26 July corridor: 219 vehicle/5 min
+ring road: 685 vehicle/5 min
+rod El Farag: 326 vehicle/5 min
+
+at jam density = 155
+26 July corridor: 296 vehicle/5 min
+ring road: 922 vehicle/5 min
+rod El Farag: 439 vehicle/5 min
+
+at jam density = 135
+26 July corridor: 258 vehicle/5 min
+ring road: 803 vehicle/5 min
+rod El Farag: 383 vehicle/5 min
+
+
+
+VERYYY FINAL CAPACITY:
+Jam Density = 135 
+LOS = 0.5
+Roads: (26 July, ring road (MR), ring road (QA))
+Highway to urban road percentage: (0.35, 0.5, 0.2)
+Speeds: (80, 90, 72)
+Min No# lanes:(3, 4, 4)
+
+26 July corridor: 338 vehicle/5 min (((((135 * 80)/12)/4)*3)0.5)
+ring road (MR): 506 vehicle/5 min (((((135 * 90)/12)/4)*4)0.5)
+ring road (QA): 405 vehicle/5 min (((((135 * 72)/12)/4)*4)0.5)
