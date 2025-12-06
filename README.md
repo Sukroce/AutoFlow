@@ -8,3 +8,11 @@ Calculating capacity: [here](Final%20Capacity.txt)
 Pre dataset-generation process: [here](./Baseline%20Data%20for%20Generating%20Datasets)
 Code for generating datasets: [here](dataset_generator_from_baseline_data.ipynb)
 Datasets: [here](./Datasets)
+
+### Machine Learning models:
+Models code and pkl files: [here](./Machine%20Learning%20Models)
+Jupyter code that runs predictions continously every 5 minutes: [here](predictions.ipynb)
+
+### Flutter Application:
+Application Code: [here](./Flutter%20Application)
+Application Apk: [here](App_Apk.md)
