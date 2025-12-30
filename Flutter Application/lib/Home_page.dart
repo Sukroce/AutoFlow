@@ -7,19 +7,15 @@ import 'predictions_page.dart';
 import 'Trip_planning_page.dart';
 import 'Accident_reporting_page.dart';
 
-// Define the name of the prediction document for the current period
 const String CURRENT_PERIOD_DOC_ID = 'A';
 
-// Firestore collection references
 final CollectionReference predictionsCollection = FirebaseFirestore.instance.collection('Predictions');
 final DocumentReference currentPredictionDoc = predictionsCollection.doc(CURRENT_PERIOD_DOC_ID);
 final DocumentReference capacitiesDoc = FirebaseFirestore.instance.collection('RoadCapacities').doc('Capacities');
 
-// The main entry point is now a StatefulWidget to manage the collapse/expand state
 class Home_page extends StatelessWidget {
   Home_page({super.key});
 
-  // Renaming to match typical Flutter naming convention, but keeping the original class name Home_page
   @override
   Widget build(BuildContext context) {
     return const HomePageStateful();
@@ -34,7 +30,6 @@ class HomePageStateful extends StatefulWidget {
 }
 
 class _HomePageStatefulState extends State<HomePageStateful> {
-  // State variable to manage map visibility. True means map is visible (default).
   bool _showMap = true;
 
   void _toggleView() {
@@ -50,7 +45,6 @@ class _HomePageStatefulState extends State<HomePageStateful> {
   final LatLng bottomLeft  = LatLng(29.93513705, 30.93570254);
   final LatLng bottomRight = LatLng(29.93513705, 31.28052688);
 
-
   @override
   Widget build(BuildContext context) {
     final bounds = LatLngBounds.fromPoints([
@@ -60,10 +54,8 @@ class _HomePageStatefulState extends State<HomePageStateful> {
       bottomLeft,
     ]);
 
-    // Determine the map height based on the state
     final double mapHeight = _showMap ? 500.0 : 0.0;
 
-    // Determine the icon direction
     final IconData toggleIcon = _showMap
         ? Icons.keyboard_arrow_up_sharp
         : Icons.keyboard_arrow_down_sharp;
@@ -73,7 +65,6 @@ class _HomePageStatefulState extends State<HomePageStateful> {
         title: const Text("AutoFlow"),
         backgroundColor: Colors.blue,
       ),
-
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -92,7 +83,6 @@ class _HomePageStatefulState extends State<HomePageStateful> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  // Use the stateless wrapper Home_page to restart the state
                   MaterialPageRoute(builder: (_) => Home_page()),
                 );
               },
@@ -113,7 +103,6 @@ class _HomePageStatefulState extends State<HomePageStateful> {
               title: const Text("Predictions"),
               onTap: () {
                 Navigator.pop(context);
-                // Assuming ModelResultsPage is the class name
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => ModelResultsPage()),
@@ -145,12 +134,10 @@ class _HomePageStatefulState extends State<HomePageStateful> {
           ],
         ),
       ),
-
       body: Column(
         children: [
-          // ANIMATED CONTAINER FOR MAP
           AnimatedContainer(
-            duration: const Duration(milliseconds: 300), // Smooth animation
+            duration: const Duration(milliseconds: 300),
             height: mapHeight,
             curve: Curves.easeInOut,
             child: FlutterMap(
@@ -164,20 +151,16 @@ class _HomePageStatefulState extends State<HomePageStateful> {
                 ),
               ),
               children: [
-                // BASE MAP TILE LAYER
                 TileLayer(
                   urlTemplate:
-                  "https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=$MAPTILER_KEY",
+                      "https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=$MAPTILER_KEY",
                   userAgentPackageName: 'com.example.smart_traffic',
                 ),
-
-                // TRAFFIC LAYER TILE LAYER
                 TileLayer(
                   urlTemplate:
-                  "https://api/maptiler.com/tiles/traffic/{z}/{x}/{y}.png?key=$MAPTILER_KEY",
+                      "https://api/maptiler.com/tiles/traffic/{z}/{x}/{y}.png?key=$MAPTILER_KEY",
                   userAgentPackageName: 'com.example.smart_traffic',
                 ),
-
                 PolygonLayer(
                   polygons: [
                     Polygon(
@@ -191,8 +174,6 @@ class _HomePageStatefulState extends State<HomePageStateful> {
               ],
             ),
           ),
-
-          // --- TOGGLE BUTTON AND DIVIDER ---
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -204,31 +185,20 @@ class _HomePageStatefulState extends State<HomePageStateful> {
             ],
           ),
           const Divider(height: 1, thickness: 1, color: Colors.grey),
-
-          // --- CONTENT AREA BELOW THE MAP ---
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  // 1. OBVIOUS REROUTING BOX
                   const ReroutingBox(),
-
                   const SizedBox(height: 16),
-
-                  // 2. ACCIDENT REPORTING BOX
                   const AccidentReportingBox(),
-
                   const SizedBox(height: 16),
-
-                  // 3. TRAFFIC STATUS BOXES (Current Prediction - Document 'A')
                   const Text(
                     "Current 5-min Predicted Traffic (Period A)",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
-
-                  // StreamBuilder for Predictions and Capacities
                   StreamBuilder<DocumentSnapshot>(
                     stream: currentPredictionDoc.snapshots(),
                     builder: (context, predSnapshot) {
@@ -254,23 +224,19 @@ class _HomePageStatefulState extends State<HomePageStateful> {
                             return Center(child: Text('Error loading capacities: ${capSnapshot.error}'));
                           }
 
-                          // Default capacities in case Firestore document doesn't exist
                           final Map<String, dynamic> capacities =
-                          (capSnapshot.hasData && capSnapshot.data!.exists)
-                              ? capSnapshot.data!.data() as Map<String, dynamic>
-                              : {'A': 338, 'B': 506, 'C': 405};
+                              (capSnapshot.hasData && capSnapshot.data!.exists)
+                                  ? capSnapshot.data!.data() as Map<String, dynamic>
+                                  : {'A': 338, 'B': 506, 'C': 405};
 
-                          // Get predictions (ensuring they are numbers, default to 0 if missing)
                           final int roadA_pred = (predData['A'] as num?)?.toInt() ?? 0;
                           final int roadB_pred = (predData['B'] as num?)?.toInt() ?? 0;
                           final int roadC_pred = (predData['C'] as num?)?.toInt() ?? 0;
 
-                          // Get capacities (ensuring they are numbers, default to a safe non-zero value)
                           final int capA = (capacities['A'] as num?)?.toInt() ?? 1;
                           final int capB = (capacities['B'] as num?)?.toInt() ?? 1;
                           final int capC = (capacities['C'] as num?)?.toInt() ?? 1;
 
-                          // Display the three road boxes in a COLUMN
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -304,8 +270,6 @@ class _HomePageStatefulState extends State<HomePageStateful> {
     );
   }
 }
-
-// --- Custom Widgets (ReroutingBox, AccidentReportingBox, TrafficInfoBox remain unchanged) ---
 
 class ReroutingBox extends StatelessWidget {
   const ReroutingBox({super.key});
@@ -405,10 +369,8 @@ class AccidentReportingBox extends StatelessWidget {
     );
   }
 }
-// ... [Existing imports and Home_page/HomePageStateful class code] ...
 
 class TrafficInfoBox extends StatelessWidget {
-  // ... [Existing properties] ...
   final String roadName;
   final int predictedCars;
   final int capacity;
@@ -419,8 +381,6 @@ class TrafficInfoBox extends StatelessWidget {
     required this.predictedCars,
     required this.capacity,
   });
-
-  // ... [Existing _getFullnessColor and _calculateRerouting methods] ...
 
   Color _getFullnessColor(double fullness) {
     if (fullness > 1.0) return Colors.red;
@@ -448,7 +408,6 @@ class TrafficInfoBox extends StatelessWidget {
     return {'message': rerouteMessage, 'color': color};
   }
 
-
   @override
   Widget build(BuildContext context) {
     final double fullness = capacity > 0 ? predictedCars / capacity : 0.0;
@@ -465,7 +424,6 @@ class TrafficInfoBox extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Road Name
             Text(
               "🛣️ Road $roadName",
               style: const TextStyle(
@@ -475,20 +433,18 @@ class TrafficInfoBox extends StatelessWidget {
               ),
             ),
             const Divider(),
-
-            // 1. Predicted Cars / Capacity (FIXED: Use Flexible to allow wrapping)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start, // Align to the top if it wraps
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
                   "Predicted/Capacity:",
                   style: TextStyle(fontSize: 14, color: Colors.grey),
                 ),
-                Flexible( // <-- Use Flexible here
+                Flexible(
                   child: Text(
-                    "**$predictedCars** cars / **$capacity** capacity",
-                    textAlign: TextAlign.right, // Keep the value aligned right
+                    "$predictedCars cars / $capacity capacity",
+                    textAlign: TextAlign.right,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -498,8 +454,6 @@ class TrafficInfoBox extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-
-            // Percentage of Fullness (No change needed, values are short)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -517,8 +471,6 @@ class TrafficInfoBox extends StatelessWidget {
                 ),
               ],
             ),
-
-            // Fullness Progress Bar
             const SizedBox(height: 5),
             LinearProgressIndicator(
               value: fullness.clamp(0.0, 1.0),
@@ -526,8 +478,6 @@ class TrafficInfoBox extends StatelessWidget {
               backgroundColor: Colors.grey.shade200,
               minHeight: 8,
             ),
-
-            // 2. Rerouting Recommendation (FIXED: The Container is now wrapped in Flexible)
             const SizedBox(height: 10),
             Container(
               width: double.infinity,
@@ -537,10 +487,9 @@ class TrafficInfoBox extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5),
                 border: Border.all(color: reroutingInfo['color'], width: 1),
               ),
-              // Use Text.rich to ensure bold text is handled, and let the Container size itself
               child: Center(
                 child: Text(
-                  reroutingInfo['message'].replaceAll('**', ''), // Remove Markdown bold for display
+                  reroutingInfo['message'].replaceAll('**', ''),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,
@@ -556,4 +505,3 @@ class TrafficInfoBox extends StatelessWidget {
     );
   }
 }
-
