@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
-// --- CONFIGURATION ---
 const int BASE_CAPACITY = 100;
 const String CURRENT_PERIOD_DOC_ID = 'A';
 const List<String> ROAD_IDS = ['A', 'B', 'C'];
-// ---------------------
 
 class TripPlanningPage extends StatefulWidget {
   const TripPlanningPage({super.key});
@@ -21,14 +19,12 @@ class _TripPlanningPageState extends State<TripPlanningPage> {
   DateTime _selectedTime = DateTime.now();
   String _rerouteResult = "Enter trip details and click Reroute to find the best path.";
 
-  // --- REROUTING LOGIC (Simplified V/C) ---
   Future<void> _runReroutingLogic() async {
     setState(() {
       _rerouteResult = "Calculating...";
     });
 
     try {
-      // 1. Fetch current predictions (V) and capacity reductions (R)
       final predictionSnapshot = await FirebaseFirestore.instance
           .collection('Predictions')
           .doc(CURRENT_PERIOD_DOC_ID)
@@ -47,14 +43,11 @@ class _TripPlanningPageState extends State<TripPlanningPage> {
       for (String road in ROAD_IDS) {
         final predictedVolume = (predictions[road] as int?) ?? 0;
 
-        // Get capacity reduction factor (R) for this road
         final reductionFactor = (params['road${road}_capacity_reduction'] as double?) ?? 0.0;
 
-        // Calculate adjusted capacity (C_adj)
         final adjustedCapacity = (BASE_CAPACITY * (1.0 - reductionFactor)).round();
-        final finalCapacity = adjustedCapacity > 0 ? adjustedCapacity : 1; // Avoid division by zero
+        final finalCapacity = adjustedCapacity > 0 ? adjustedCapacity : 1;
 
-        // Calculate V/C Ratio
         final vcRatio = predictedVolume / finalCapacity;
 
         roadMetrics.add({
@@ -65,10 +58,8 @@ class _TripPlanningPageState extends State<TripPlanningPage> {
         });
       }
 
-      // 2. Sort by V/C Ratio (lowest is best/least congested)
       roadMetrics.sort((a, b) => a['vc_ratio'].compareTo(b['vc_ratio']));
 
-      // 3. Determine result
       final bestRoute = roadMetrics.first;
       final bestVC = bestRoute['vc_ratio'].toStringAsFixed(2);
 
@@ -102,7 +93,6 @@ class _TripPlanningPageState extends State<TripPlanningPage> {
             TextField(controller: _startController, decoration: const InputDecoration(labelText: "Start Location")),
             TextField(controller: _destinationController, decoration: const InputDecoration(labelText: "Destination")),
 
-            // Start Time
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text("Trip Start Time: ${DateFormat('HH:mm').format(_selectedTime)}"),
