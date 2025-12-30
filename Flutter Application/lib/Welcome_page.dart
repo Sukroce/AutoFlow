@@ -46,7 +46,7 @@ class _Welcome_pageState extends State<Welcome_page> {
               children: [
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.only(top: 20, right: 15, left: 30), // 30 margin on the left, 15 between buttons
+                    margin: EdgeInsets.only(top: 20, right: 15, left: 30),
                     height: 56,
                     child: SizedBox(
                       child: TextButton(
@@ -72,7 +72,7 @@ class _Welcome_pageState extends State<Welcome_page> {
                 ),
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.only(top: 20, right: 30, left: 15), // 30 margin on the right, 15 between buttons
+                    margin: EdgeInsets.only(top: 20, right: 30, left: 15),
                     height: 56,
                     child: SizedBox(
                       child: TextButton(
