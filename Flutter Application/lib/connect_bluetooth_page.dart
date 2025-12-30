@@ -14,24 +14,20 @@ class _ConnectBluetoothPageState extends State<ConnectBluetoothPage> {
   String status = "Not connected";
   bool isConnecting = false;
 
-  // UPDATED STATE NAME: Now holds the count from the LAST completed 5-minute period
   Map<String, int> lastPeriodCounts = {
     "A": 0,
     "B": 0,
     "C": 0,
   };
 
-  // Stores incoming raw messages (A;10)
   final List<String> messages = [];
 
-  // Auto-scroll controller
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
 
-    // 1. Raw Data Log Callback (for the list view at the bottom)
     bt.onRawDataReceived = (String data) {
       setState(() {
         messages.add(data.trim());
@@ -40,7 +36,6 @@ class _ConnectBluetoothPageState extends State<ConnectBluetoothPage> {
         }
       });
 
-      // Smooth auto-scroll
       Future.delayed(const Duration(milliseconds: 10), () {
         if (_scrollController.hasClients) {
           _scrollController.animateTo(
@@ -52,8 +47,6 @@ class _ConnectBluetoothPageState extends State<ConnectBluetoothPage> {
       });
     };
 
-    // 2. Period Count Update Callback (Only updates every 5 minutes)
-    // NOTE: This callback is only triggered inside _uploadCarCounts after a successful upload.
     bt.onPeriodCountUpdate = (Map<String, int> counts) {
       setState(() {
         lastPeriodCounts = counts;
@@ -61,10 +54,9 @@ class _ConnectBluetoothPageState extends State<ConnectBluetoothPage> {
     };
   }
 
-  // --- CRUCIAL CLEANUP METHOD ---
   @override
   void dispose() {
-    bt.dispose(); // Stops the 5-minute timer and closes the Bluetooth connection
+    bt.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -128,7 +120,6 @@ class _ConnectBluetoothPageState extends State<ConnectBluetoothPage> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            // STATUS BOX
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               padding: const EdgeInsets.all(16),
@@ -157,7 +148,6 @@ class _ConnectBluetoothPageState extends State<ConnectBluetoothPage> {
 
             const SizedBox(height: 20),
 
-            // LAST PERIOD COUNTS DISPLAY (Updates only every 5 minutes)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -169,7 +159,6 @@ class _ConnectBluetoothPageState extends State<ConnectBluetoothPage> {
 
             const SizedBox(height: 25),
 
-            // CONNECT BUTTON
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -193,7 +182,6 @@ class _ConnectBluetoothPageState extends State<ConnectBluetoothPage> {
 
             const SizedBox(height: 25),
 
-            // INCOMING RAW DATA LOG
             Expanded(
               child: Container(
                 padding: const EdgeInsets.all(14),
