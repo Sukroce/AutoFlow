@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
-// --- (Re-define Prediction Model for completeness) ---
 class PredictionResult {
   final String period;
   final int roadA;
@@ -16,26 +15,21 @@ class PredictionResult {
     required this.roadC,
   });
 
-  // Factory method to create PredictionResult from a Firestore Document
   factory PredictionResult.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return PredictionResult(
-      period: doc.id, // Document ID is the period (A, B, C, etc.)
-      roadA: data['A'] ?? 0, // Use 0 as default if field is missing
+      period: doc.id,
+      roadA: data['A'] ?? 0,
       roadB: data['B'] ?? 0,
       roadC: data['C'] ?? 0,
     );
   }
 }
-// ----------------------------------------------------
-
 
 class ModelResultsPage extends StatelessWidget {
-  // Define the list of expected document IDs for ordering
   final List<String> periodIds =
   List.generate(12, (index) => String.fromCharCode('A'.codeUnitAt(0) + index));
 
-  // Reference to the Firestore collection
   final CollectionReference predictionsCollection =
   FirebaseFirestore.instance.collection('Predictions');
 
@@ -55,7 +49,6 @@ class ModelResultsPage extends StatelessWidget {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        // Listen to the entire 'Predictions' collection
         stream: predictionsCollection.snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -68,18 +61,14 @@ class ModelResultsPage extends StatelessWidget {
             return const Center(child: Text('No prediction data available.'));
           }
 
-          // 1. Convert documents to PredictionResult objects
           List<PredictionResult> results = snapshot.data!.docs
               .map((doc) => PredictionResult.fromFirestore(doc))
               .toList();
 
-          // 2. Sort the results by the predefined order (A to L)
           results.sort((a, b) => periodIds.indexOf(a.period).compareTo(periodIds.indexOf(b.period)));
 
-          // --- START: Time Correction Logic ---
           Timestamp? lastUpdateTimeStamp;
 
-          // Find the document 'A' (or any document) to extract the timestamp
           final docA = snapshot.data!.docs.cast<DocumentSnapshot?>().firstWhere(
                 (doc) => doc?.id == 'A',
             orElse: () => null,
@@ -87,18 +76,13 @@ class ModelResultsPage extends StatelessWidget {
 
           if (docA != null && docA.data() is Map<String, dynamic>) {
             final data = docA.data() as Map<String, dynamic>;
-            // Extract the Firestore Timestamp object
             lastUpdateTimeStamp = data['timestamp'] as Timestamp?;
           }
 
-          // Format the time for display
           final formattedTime = lastUpdateTimeStamp != null
               ? DateFormat('HH:mm:ss').format(lastUpdateTimeStamp.toDate())
               : 'N/A';
 
-          // --- END: Time Correction Logic ---
-
-          // --- UI Structure ---
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -109,13 +93,11 @@ class ModelResultsPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 Text(
-                  // Display the actual timestamp from Firebase
                   'Predictions generated at: $formattedTime',
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.grey[700]),
                 ),
                 const Divider(height: 30),
 
-                // --- DataTable for Predictions ---
                 SizedBox(
                   width: double.infinity,
                   child: DataTable(
